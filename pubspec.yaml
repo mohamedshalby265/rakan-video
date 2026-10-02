@@ -8,6 +8,6 @@ dependencies:
   flutter:
     sdk: flutter
   video_player: ^2.9.2
-  file_picker: ^8.1.2
+  file_picker: ^10.3.10
 flutter:
   uses-material-design: true
