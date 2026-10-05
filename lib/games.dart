@@ -3,15 +3,31 @@ import 'package:flutter_tts/flutter_tts.dart';
 
 final tts = FlutterTts();
 
-Future<void> say(String t,
-    {String lang = 'ar-SA', double pitch = 1.7, double rate = 0.4}) async {
+bool _engineSet = false;
+
+Future<String?> say(String t,
+    {String lang = 'ar', double pitch = 1.7, double rate = 0.4}) async {
   try {
+    if (!_engineSet) {
+      _engineSet = true;
+      try {
+        await tts.setEngine('com.google.android.tts');
+      } catch (_) {}
+    }
     await tts.stop();
+    final ok = await tts.isLanguageAvailable(lang);
+    if (ok != true) {
+      return 'مفيش صوت للغة دي على الموبايل. نزّل Speech Services by Google من متجر Play وحمّل اللغة';
+    }
     await tts.setLanguage(lang);
+    await tts.setVolume(1.0);
     await tts.setPitch(pitch);
     await tts.setSpeechRate(rate);
     await tts.speak(t);
-  } catch (_) {}
+    return null;
+  } catch (e) {
+    return 'حصلت مشكلة في الصوت: $e';
+  }
 }
 
 class Item {
@@ -20,7 +36,7 @@ class Item {
   const Item(this.big, this.label, this.speak, this.lang, [this.color]);
 }
 
-List<Item> parse(List<String> l, [String lang = 'ar-SA']) => l.map((e) {
+List<Item> parse(List<String> l, [String lang = 'ar']) => l.map((e) {
       final p = e.split('|');
       return Item(p[0], p[1], p.length > 2 ? p[2] : p[1], lang);
     }).toList();
@@ -31,7 +47,7 @@ final colors = [
   'ffffff|أبيض', '795548|بني',
 ].map((e) {
   final p = e.split('|');
-  return Item('', p[1], p[1], 'ar-SA', Color(int.parse('ff${p[0]}', radix: 16)));
+  return Item('', p[1], p[1], 'ar', Color(int.parse('ff${p[0]}', radix: 16)));
 }).toList();
 
 final arLetters = parse([
@@ -150,12 +166,18 @@ class TapGrid extends StatelessWidget {
   final Cat cat;
   const TapGrid(this.cat, {super.key});
 
-  Widget card(Item it, int i) {
+  Widget card(BuildContext ctx, Item it, int i) {
     final bg = it.color ?? pal[i % pal.length];
     final fg = bg.computeLuminance() > 0.6 ? Colors.black : Colors.white;
     return InkWell(
       borderRadius: BorderRadius.circular(18),
-      onTap: () => say(it.speak, lang: it.lang),
+      onTap: () async {
+        final e = await say(it.speak, lang: it.lang);
+        if (e != null && ctx.mounted) {
+          ScaffoldMessenger.of(ctx)
+              .showSnackBar(SnackBar(content: Text(e)));
+        }
+      },
       child: Ink(
         decoration: BoxDecoration(
             color: bg,
@@ -197,7 +219,7 @@ class TapGrid extends StatelessWidget {
           mainAxisSpacing: 10,
           crossAxisSpacing: 10,
           children: [
-            for (var i = 0; i < cat.items.length; i++) card(cat.items[i], i)
+            for (var i = 0; i < cat.items.length; i++) card(context, cat.items[i], i)
           ],
         ),
       );
