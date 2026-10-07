@@ -12,6 +12,7 @@ Future<String?> say(String t,
       _engineSet = true;
       try {
         await tts.setEngine('com.google.android.tts');
+        await tts.awaitSpeakCompletion(true);
       } catch (_) {}
     }
     await tts.stop();
