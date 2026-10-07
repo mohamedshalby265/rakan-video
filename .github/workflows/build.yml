@@ -28,8 +28,14 @@ jobs:
         run: |
           M=android/app/src/main/AndroidManifest.xml
           sed -i 's/android:label="[^"]*"/android:label="راكان"/' $M
+          sed -i 's#<application#<uses-permission android:name="android.permission.READ_MEDIA_VIDEO"/><uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/><uses-permission android:name="android.permission.READ_MEDIA_AUDIO"/><uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32"/><application#' $M
           sed -i 's#<queries>#<queries><intent><action android:name="android.intent.action.TTS_SERVICE"/></intent>#' $M
-      - run: flutter pub get
+      - name: Logo and icon
+        run: |
+          mkdir -p assets
+          cp logo.png assets/logo.png
+          flutter pub get
+          dart run flutter_launcher_icons
       - run: flutter build apk --release --build-number=${{ github.run_number }}
       - run: cp build/app/outputs/flutter-apk/app-release.apk Rakan.apk
       - uses: softprops/action-gh-release@v2
