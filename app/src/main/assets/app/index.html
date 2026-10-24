@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no, maximum-scale=1">
+<title>راكان</title>
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<div class="screen" id="screen">
+  <div class="sky-sun"></div>
+  <svg class="sky-hills" viewBox="0 0 360 120" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0 74 C 52 40, 96 44, 140 70 C 184 96, 220 52, 266 62 C 304 70, 334 92, 360 80 L360 120 L0 120 Z" fill="#8FD38A" opacity=".55"/>
+    <path d="M0 94 C 60 68, 110 100, 168 90 C 226 80, 274 104, 360 96 L360 120 L0 120 Z" fill="#6CBF72" opacity=".5"/>
+  </svg>
+
+  <div class="statusbar">
+    <button class="brand" id="brand" aria-label="اضغط مطولا للخروج">
+      <span class="hold-ring"><svg viewBox="0 0 100 44"><rect x="2" y="2" width="96" height="40" rx="20" fill="none" stroke="#EF5B42" stroke-width="3.5" stroke-dasharray="272" stroke-dashoffset="272" id="ringPath"/></svg></span>
+      <img class="mark" src="logo.png" alt=""><span>راكان</span>
+    </button>
+    <div class="playmeter"><span class="stars" id="stars"></span><small id="minsLeft"></small></div>
+    <div class="me" id="meBadge"></div>
+  </div>
+
+  <div id="hintSlot"></div>
+  <div class="view" id="view"></div>
+  <div class="dock" id="dock"></div>
+</div>
+
+<input type="file" id="fileFace" accept="image/*" hidden>
+<script src="app.js"></script>
+</body>
+</html>
