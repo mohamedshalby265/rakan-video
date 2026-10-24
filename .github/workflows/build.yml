@@ -22,7 +22,6 @@ jobs:
           gradle-version: '8.10.2'
       - name: Signing key
         run: |
-          test -n "$KEYSTORE_BASE64" || { echo "KEYSTORE_BASE64 secret is missing"; exit 1; }
           echo "$KEYSTORE_BASE64" | base64 -d > app/rakan.jks
       - name: Build
         run: gradle assembleRelease --no-daemon
